@@ -19,7 +19,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MapActivity"/>
         <meta-data android:name="com.kakao.sdk.AppKey" android:value="88e4a33c081bfa62914ed2dc6ca4c507"/>
     </application>
 </manifest>

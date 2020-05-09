@@ -1,12 +1,11 @@
 package com.example.eating_life
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.animation.TranslateAnimation
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         shuffle(menu_array)
         addMenu(menu_array)
         button.setOnClickListener {
+            button.setEnabled(false)
             slotMachine.setInAnimation(slide_in_anim)
             slotMachine.setOutAnimation(slide_out_anim)
             var speed = 50
@@ -40,7 +40,12 @@ class MainActivity : AppCompatActivity() {
                     slotMachine.stopFlipping()
                 }
             }
+            Handler().postDelayed({
+                button.setEnabled(true)
+                setupLottie()
+            }, 4500)
         }
+
 
         /*
         val url = "kakaomap://search?q=맛집&p=37.537229,127.005515"
@@ -68,9 +73,19 @@ class MainActivity : AppCompatActivity() {
         for (i in 0..(menu.size-1)) {
             val flip_text = TextView(this)
             flip_text.setGravity(Gravity.CENTER)
-            flip_text.setTextSize(40F)
+            flip_text.setTextSize(48f)
+            flip_text.setTypeface(Typeface.DEFAULT_BOLD)
+            flip_text.setTextColor(Color.DKGRAY)
+            flip_text.setBackgroundColor(Color.WHITE)
             flip_text.setText(menu.get(i))
             slotMachine.addView(flip_text)
+        }
+    }
+
+    fun setupLottie(){
+            lottie_confetti.apply {
+            setAnimation("confetti.json")
+            playAnimation()
         }
     }
 }
