@@ -46,8 +46,7 @@ class MainActivity : AppCompatActivity() {
                 setupLottie()
             }, 4500)
         }
-
-
+        
         /*
         val url = "kakaomap://search?q=맛집&p=37.537229,127.005515"
 
