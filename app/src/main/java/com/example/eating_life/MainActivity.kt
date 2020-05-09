@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         floatingActionButton2.setVisibility(View.GONE)
         val menu_array = arrayOf("치킨", "피자", "파스타", "자장면", "짬뽕", "뼈해장국", "순대국밥", "회덮밥")
         val slide_in_anim = AnimationUtils.loadAnimation(this, R.anim.slide_in)
