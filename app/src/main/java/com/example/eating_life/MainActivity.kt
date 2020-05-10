@@ -1,5 +1,7 @@
 package com.example.eating_life
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -15,27 +17,37 @@ import kotlin.concurrent.timer
 import kotlin.Array
 
 class MainActivity : AppCompatActivity() {
+    var dbHelper : DBHelper? = null
+    var menu_list = arrayListOf<menu_item>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        floatingActionButton2.setVisibility(View.GONE)
-        val menu_array = arrayOf("치킨", "피자", "파스타", "자장면", "짬뽕", "뼈해장국", "순대국밥", "회덮밥")
+        dbHelper = DBHelper(this)
+        menu_list = dbHelper!!.selectAll()
+        if (menu_list.size == 0) {
+            val menu_array = arrayOf("치킨", "피자", "파스타", "자장면", "짬뽕", "뼈해장국", "순대국밥", "회덮밥")
+            for (i in 0..(menu_array.size - 1)) {
+                dbHelper!!.insertRecord(menu_array[i])
+            }
+            menu_list = dbHelper!!.selectAll()
+        }
         val slide_in_anim = AnimationUtils.loadAnimation(this, R.anim.slide_in)
         val slide_out_anim = AnimationUtils.loadAnimation(this, R.anim.slide_out)
-        shuffle(menu_array)
-        addMenu(menu_array)
+        shuffle(menu_list)
+        addMenu(menu_list)
         button.setOnClickListener {
             button.setEnabled(false)
             slotMachine.setInAnimation(slide_in_anim)
             slotMachine.setOutAnimation(slide_out_anim)
-            var speed = 50
+            var speed = 30
             slotMachine.setFlipInterval(speed)
             slotMachine.startFlipping()
             timer(period = 100)
             {
                 speed += 10 //* (speed / 100 + 1)
                 slotMachine.setFlipInterval(speed)
-                if (speed >= 500)
+                if (speed >= 470)
                 {
                     cancel()
                     slotMachine.stopFlipping()
@@ -44,9 +56,14 @@ class MainActivity : AppCompatActivity() {
             Handler().postDelayed({
                 button.setEnabled(true)
                 setupLottie()
-            }, 4500)
+            }, 4400)
         }
-        
+
+        floatingActionButton.setOnClickListener {
+            val intent = Intent(this, MenuActivity::class.java)
+            startActivity(intent)
+        }
+
         /*
         val url = "kakaomap://search?q=맛집&p=37.537229,127.005515"
 
@@ -55,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         */
     }
 
-    fun shuffle(menu : Array<String>)
+    fun shuffle(menu : ArrayList<menu_item>)
     {
         val random = Random()
         var tmp: String
@@ -63,13 +80,13 @@ class MainActivity : AppCompatActivity() {
         for (i in 0..(menu.size-1))
         {
             rn = random.nextInt(menu.size - i) + i
-            tmp = menu[i]
-            menu[i] = menu[rn]
-            menu[rn] = tmp
+            tmp = menu[i].name
+            menu[i].name = menu[rn].name
+            menu[rn].name = tmp
         }
     }
 
-    fun addMenu(menu : Array<String>) {
+    fun addMenu(menu : ArrayList<menu_item>) {
         for (i in 0..(menu.size-1)) {
             val flip_text = TextView(this)
             flip_text.setGravity(Gravity.CENTER)
@@ -77,7 +94,7 @@ class MainActivity : AppCompatActivity() {
             flip_text.setTypeface(Typeface.DEFAULT_BOLD)
             flip_text.setTextColor(Color.DKGRAY)
             flip_text.setBackgroundColor(Color.WHITE)
-            flip_text.setText(menu.get(i))
+            flip_text.setText(menu.get(i).name)
             slotMachine.addView(flip_text)
         }
     }
